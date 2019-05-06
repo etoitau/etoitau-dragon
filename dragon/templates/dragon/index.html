@@ -1,0 +1,25 @@
+{% extends "dragon/layout.html" %}
+
+{% block title %}
+    Dragon Curve Maker
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h3>Dragon Curve Maker</h3>
+    {% if message %}<p>{{ message }}</p>{% endif %}
+    
+    <p>You may have seen the classic 
+    <a class="nostyle" target="_blank" href="https://en.wikipedia.org/wiki/Dragon_curve#Heighway_dragon">
+        Heighway (or Jurrasic Park) dragon Curve
+    </a>
+    before. This app lets you build your own similar fractal curve. Define a pattern by drawing a line with
+    at least two segments. Then the app will recursively replace each segment with the pattern itself, flipping 
+    the orientaiton each time
+    </p>
+</div>
+{% endblock %}

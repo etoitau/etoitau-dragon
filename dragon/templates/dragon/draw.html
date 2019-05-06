@@ -1,0 +1,29 @@
+{% extends "dragon/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    Dragon Curve Maker - Draw
+{% endblock %}
+
+{% block scripts %}
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="{% static 'dragon/drawscripts.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h3>Draw Pattern</h3>
+    {% if message %}<p>{{ message }}</p>{% endif %}
+    First, give your pattern a name<br>
+    <input autocomplete="off" autofocus name="pattern_name" placeholder="Pattern Name" type="text"><br>
+    <br>
+    Click to draw line end points. Your pattern should have at least two segments.<br>
+    <svg id="draw">
+    </svg><br>
+    <span id="mouse_coords">x, y</span><br>
+    <button id="erase">Erase</button><br>
+    <button id="save">Save</button><br>
+
+</div>
+{% endblock %}
