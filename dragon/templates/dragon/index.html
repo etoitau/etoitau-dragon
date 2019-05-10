@@ -1,11 +1,15 @@
 {% extends "dragon/layout.html" %}
 
+{% load static %}
+
 {% block title %}
     Dragon Curve Maker
 {% endblock %}
 
 {% block scripts %}
-
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="{% static 'dragon/helpers.js' %}"></script>
+<script type="text/javascript" src="{% static 'dragon/svgthumb.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -19,7 +23,24 @@
     </a>
     before. This app lets you build your own similar fractal curve. Define a pattern by drawing a line with
     at least two segments. Then the app will recursively replace each segment with the pattern itself, flipping 
-    the orientaiton each time
+    the orientaton each time. I was introduced to it in 
+    <a class="nostyle" target="_blank" href="https://www.youtube.com/playlist?list=PLt5AfwLFPxWKaSnoaJgjVN-7Vl4Xdu4vT">
+        one of the excellent Numberphile's videos</a>.
     </p>
+    <p><a class="nostyle" href="{% url 'draw' %}">Try it for yourself here</a></p>
+    <p>Or browse user-created patterns below.</p>
+    <table class="infotable">
+        <tr>
+            <th>Pattern</th><th>Name</th><th>By User</th><th>Votes</th>
+        </tr>
+        {% for pattern in top_patterns %}
+            <tr>
+                <td><svg class="thumbnail" data-coords="{{ pattern.data }}"></svg></td>
+                <td>{{ pattern.name}}</td>
+                <td>{{ pattern.creator.username }}</td>
+                <td>{{ pattern.score }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}

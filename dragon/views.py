@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.models import User
-from dragon.models import *
+from dragon.models import Pattern
 from django.conf import settings
 
 if settings.DEBUG:
@@ -47,6 +47,16 @@ def index(request):
         context = {
             "user": None
         }
+    qs = Pattern.objects.order_by("score")[:10]
+    top_patterns = []
+    i = 0
+    for pattern in qs:
+        top_patterns.append({
+            "name": pattern.name,
+            "username": pattern.creator.username,
+            "score": pattern.score,
+        })
+    context["top_patterns"] = qs
     return render(request, "dragon/index.html", context)
 
 def login_view(request):
@@ -110,3 +120,25 @@ def register_view(request):
     # if coming via GET, serve registration form
     else:
         return render(request, "dragon/register.html")
+
+
+def save(request):
+    """when user submits a pattern"""
+    p_name = request.POST["pattern_name"]
+    p_data = request.POST["pattern_data"]
+    created = False
+    i = 0
+    while not created:
+        if not i:
+            add = ""
+        else:
+            add = str(i)
+        new_pattern, created = Pattern.objects.get_or_create(
+            creator_id=request.user.id, 
+            name=p_name + add, 
+            defaults={"data": p_data}
+        )
+        if not created:
+            i += 1 
+    return HttpResponseRedirect(reverse("index"))
+

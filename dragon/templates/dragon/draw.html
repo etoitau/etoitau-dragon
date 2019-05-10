@@ -8,22 +8,38 @@
 
 {% block scripts %}
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="{% static 'dragon/helpers.js' %}"></script>
 <script type="text/javascript" src="{% static 'dragon/drawscripts.js' %}"></script>
+<script type="text/javascript" src="{% static 'dragon/viewer.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <div class="content">
     <h3>Draw Pattern</h3>
     {% if message %}<p>{{ message }}</p>{% endif %}
-    First, give your pattern a name<br>
-    <input autocomplete="off" autofocus name="pattern_name" placeholder="Pattern Name" type="text"><br>
-    <br>
+    Draw the pattern to be used as basis of the fractal<br>
     Click to draw line end points. Your pattern should have at least two segments.<br>
     <svg id="draw">
     </svg><br>
     <span id="mouse_coords">x, y</span><br>
     <button id="erase">Erase</button><br>
-    <button id="save">Save</button><br>
+    <button id="explore">Explore</button><br><br>
+    {% if user.is_authenticated %}
+        <form id="pattern_save" action="{% url 'save' %}" method="post">
+            {% csrf_token %}
+            <input autocomplete="off" autofocus id="pattern_name" name="pattern_name" maxlength="16" placeholder="Pattern Name" type="text">
+            <input type="hidden" name="pattern_data" id = "pattern_data" value="">
+            <button type="submit" id="save_button">Save</button><span id="save_msg"></span>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}" class="nostyle">Log in</a> to save and share your pattern<br>
+    {% endif %}
+    <br>
+    <svg id="explore_view">
+    </svg><br>
+    <button id="deeper">Deeper</button><button id="up">Back up</button>
+    
+
 
 </div>
 {% endblock %}

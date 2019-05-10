@@ -50,29 +50,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.querySelector('#erase').onclick = () => {
-            for (let i = 0; i < points.length; i++)
-                points[i].remove();
-            for (let i = 0; i < lines.length; i++)
-                lines[i].remove();
-            points = [];
-            lines = [];
-            pattern = [];
+            clean_up_draw();
         }
 
-        document.querySelector('#save').onclick = () => {
-            console.log("clicked save")
-            console.log(points)
-            console.log("points as string")
-            console.log(JSON.stringify(points))
-            for (let i = 0; i < points.length; i++)
-                points[i].remove();
-            for (let i = 0; i < lines.length; i++)
-                lines[i].remove();
-            points = [];
-            lines = [];
-            pattern = [];
+        // if logged in, save button exists
+        if (document.querySelector('#pattern_save')) {
+            console.log("found save form")
+            document.querySelector('#pattern_save').addEventListener("submit", function(e) {
+                console.log("clicked save");
+                console.log("pattern as string");
+                console.log(JSON.stringify(pattern));
+                // normalize before saving to server
+                if (!pattern.length) {
+                    e.preventDefault();
+                    document.getElementById("save_msg").innerHTML = "No pattern to save";
+                    return 0;
+                }
+                let json_p = JSON.stringify(normalize(pattern));
+                let p_name = document.getElementById("pattern_name").value;
+                if (!p_name.length) {
+                    e.preventDefault();
+                    document.getElementById("save_msg").innerHTML = "Enter name to save";
+                    return 0;
+                }
+                document.getElementById("pattern_data").value = json_p;    
+            });
         }
+        
+    }
 
+    function clean_up_draw() {
+        for (let i = 0; i < points.length; i++)
+            points[i].remove();
+        for (let i = 0; i < lines.length; i++)
+            lines[i].remove();
+        points = [];
+        lines = [];
+        pattern = [];
     }
 
     function draw_point(x, y, connect) {
@@ -101,4 +115,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     render();
+    // send pattern to viewer to expore
+    document.querySelector('#explore').onclick = () => {
+        console.log("explore clicked")
+        viewer(pattern);
+    };
+    // initialize viewier with blank pattern
+    viewer(pattern, box_dim);
 });
+
+

@@ -31,9 +31,13 @@ form, input, select, button, textarea {
     font-size: inherit;
 }
 
-a.nostyle, a.nostyle:link, a.nostyle:visited, a.nostyle:hover, a.nostyle:active {
+a.nostyle, a.nostyle:link, a.nostyle:visited, a.nostyle:active {
     color: inherit;
     text-decoration: none;
+}
+
+a.nostyle:hover {
+    text-decoration: underline;
 }
 
 .right {
@@ -44,28 +48,31 @@ a.nostyle, a.nostyle:link, a.nostyle:visited, a.nostyle:hover, a.nostyle:active 
     padding: 15px;
 }
 
-.menutable {
+table.infotable {
     border-collapse: collapse;
+    margin: 0;
+    padding: 0;
 }
 
-.menutable td {
-    border: none;
-    padding: 15px;
-    max-width: 270px;
-}
-
-.menutable th {
-    text-align: left;
-    padding: 15px;
-}
-
-.menutable tr:nth-child(even) {
-    background-color: rgba(0, 128, 0, 0.15);
-}
-
-.highlight {
-    background-color: rgba(128, 0, 0, 0.15);
+.infotable th {
     font-weight: 600;
+    border-width: 1px;
+    border-style: none none solid none;
+}
+
+.infotable td {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #cccccc;
+    padding: 4px;
+    vertical-align: center;
+    align-content: center;
+    text-align: center;
+}
+
+.infotable td, th {
+    width: 10px;
+    white-space: nowrap;
 }
 
 h4, h5 {
