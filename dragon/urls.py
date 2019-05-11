@@ -1,3 +1,5 @@
+"""dragon urls"""
+
 from django.urls import path
 from dragon import views
 
@@ -9,4 +11,7 @@ urlpatterns = [
     path("register", views.register_view, name="register"),
     path("draw", views.draw, name="draw"),
     path("save", views.save, name="save"),
+    path("view", views.view, name="view"),
+    path("vote", views.vote, name="vote"),
+    path("delete", views.delete, name="delete"),
 ]

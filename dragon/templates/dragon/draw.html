@@ -11,6 +11,7 @@
 <script type="text/javascript" src="{% static 'dragon/helpers.js' %}"></script>
 <script type="text/javascript" src="{% static 'dragon/drawscripts.js' %}"></script>
 <script type="text/javascript" src="{% static 'dragon/viewer.js' %}"></script>
+<script type="text/javascript" src="{% static 'dragon/svgthumb.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -37,9 +38,33 @@
     <br>
     <svg id="explore_view">
     </svg><br>
-    <button id="deeper">Deeper</button><button id="up">Back up</button>
-    
-
-
+    <button id="deeper">Deeper</button><button id="up">Back up</button><br>
+    {% if user.is_authenticated %}
+    <br>
+    <h3>Saved Patterns:</h3>
+        <table class="infotable">
+                <tr>
+                    <th>Pattern</th><th>Name</th><th>Votes</th><th></th>
+                </tr>
+                {% for pattern in user_patterns %}
+                    <tr>
+                        <td>
+                            <a class="nostyle" href=
+                            "{% url 'view' %}?username={{ pattern.creator.username }}&pattern_name={{ pattern.name }}">
+                                <svg class="thumbnail" data-coords="{{ pattern.data }}"></svg>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="nostyle" href=
+                            "{% url 'view' %}?username={{ pattern.creator.username }}&pattern_name={{ pattern.name }}">
+                                {{ pattern.name}}
+                            </a>
+                        </td>
+                        <td>{{ pattern.score }}</td>
+                        <td><button data-patternid="{{ pattern.id }}" class="delete_button">Delete</button></td>
+                    </tr>
+                {% endfor %}
+            </table>
+    {% endif %}
 </div>
 {% endblock %}

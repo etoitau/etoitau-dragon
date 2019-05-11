@@ -1,3 +1,4 @@
+// scripts for setting up draw page and for user input of pattern
 pattern = [];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,9 +17,25 @@ document.addEventListener('DOMContentLoaded', () => {
     let draw_color = "white";
     let draw_weight = 1;
 
+    // get CSRF for ajax
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
 
     function render() {
-
         // create the selection area
         svg = d3.select('#draw')
                 .attr('height', box_dim)
@@ -30,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .attr("fill", box_color);
 
         svg.on('click', function() {
-            console.log("clicked at coords")
             const coords = d3.mouse(this);
             console.log(coords)
             if (points.length) {
@@ -40,8 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             draw_point(coords[0], coords[1], connect);
             pattern.push([coords[0], coords[1]]);
-            console.log("pattern:")
-            console.log(pattern)
         });
 
         svg.on('mousemove', function() {
@@ -76,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById("pattern_data").value = json_p;    
             });
         }
-        
     }
 
     function clean_up_draw() {
@@ -90,10 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function draw_point(x, y, connect) {
-
         const color = draw_color;
         const thickness = draw_weight;
-
         if (connect) {
             const last_point = points[points.length - 1];
             const line = svg.append('line')
@@ -105,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             .style('stroke', color);
             lines.push(line);
         }
-
         const point = svg.append('circle')
                          .attr('cx', x)
                          .attr('cy', y)
@@ -122,6 +132,35 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     // initialize viewier with blank pattern
     viewer(pattern, box_dim);
+
+    // if there are delete buttons, set them up
+    if (document.querySelector(".delete_button")) {
+        var delete_buttons = document.getElementsByClassName("delete_button")
+        for (let i = 0; i < delete_buttons.length; i++) {
+            delete_buttons[i].addEventListener("click", function() {
+                console.log("clicked delete")
+                // tell server to delete object
+                const request = new XMLHttpRequest();
+                request.open('POST', '/delete');
+                request.setRequestHeader('X-CSRFToken', csrftoken);
+                request.setRequestHeader('Content-Type', "application/json");
+                request.onload = () => {
+                    const msg = request.responseText;
+                    console.log("response from server:")
+                    console.log(msg);
+                    if (msg != "deleted") {
+                        delete_buttons[i].insertAdjacentHTML = "Error";
+                    } else {
+                        // if sucessful, remove this pattern's row from page
+                        delete_buttons[i].closest("tr").parentNode.removeChild(delete_buttons[i].closest("tr"));
+                    }
+                }
+                console.log("sending:")
+                console.log(delete_buttons[i].dataset.patternid)
+                request.send(delete_buttons[i].dataset.patternid);
+            });
+        }
+    }
 });
 
 

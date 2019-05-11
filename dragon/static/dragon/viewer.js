@@ -1,6 +1,8 @@
+// set up viewport that allows user to generate fractal from pattern
+// and zoom and pan
 function viewer(in_pattern) {
     console.log("viewer called with pattern:")
-    console.log(JSON.stringify(pattern))
+    console.log(JSON.stringify(in_pattern))
     // svg elements
     // points and lines will be arrays of arrays eg points[level][svgpoint]
     let points = [];
@@ -15,6 +17,7 @@ function viewer(in_pattern) {
     // parameters
     let box_color = "black";
     let draw_color = "white";
+    let highlight_color = "yellow";
     let draw_weight = 1;
     let gradations = 4;
     // set viewer box size
@@ -22,7 +25,6 @@ function viewer(in_pattern) {
 
 
     function render() {
-        
         // create the selection area
         svg = d3.select('#explore_view')
                 .attr('height', box_dim)
@@ -38,12 +40,11 @@ function viewer(in_pattern) {
 
         g = svg.append("g");
 
-        // https://bl.ocks.org/mbostock/4e3925cdc804db257a86fdef3a032a45
+        // thanks to https://bl.ocks.org/mbostock/4e3925cdc804db257a86fdef3a032a45
         function zoomed() {
         g.attr("transform", d3.event.transform);
         }
         
-
         if (!in_pattern.length)
             return 0;
 
@@ -93,13 +94,10 @@ function viewer(in_pattern) {
                 // for each point at current level, starting at second, interpolate the pattern
                 for (let i = 1; i < points[level].length; i++) {
                     // start and end coords of this part
-                    //console.log("point index: %i", i);
                     let xstart = parseFloat(points[level][i - 1].attr("cx"));
                     let ystart = parseFloat(points[level][i - 1].attr("cy"));
                     let xend = parseFloat(points[level][i].attr("cx"));
                     let yend = parseFloat(points[level][i].attr("cy"));
-                    //console.log("start: (%f, %f)", xstart, ystart);
-                    //console.log("end: (%f, %f)", xend, yend);
                     let chord_length = chordLength([[xstart, ystart], [xend, yend]]);
                     let chord_angle = chordAngle([[xstart, ystart], [xend, yend]]);
                     let temp_p = JSON.parse(JSON.stringify(norm_pattern));
@@ -112,8 +110,6 @@ function viewer(in_pattern) {
                     temp_p = scale(temp_p, chord_length);
                     temp_p = rotate(temp_p, chord_angle);
                     temp_p = translation(temp_p, [xstart, ystart]);
-                    //console.log("temp_p:");
-                    //console.log(JSON.stringify(temp_p));
                     // note starting point already created, start with second and connect
                     for (let j = 1; j < temp_p.length; j++) {
                         draw_point(level + 1, temp_p[j][0], temp_p[j][1], true)
@@ -132,10 +128,8 @@ function viewer(in_pattern) {
     }
 
     function draw_point(level, x, y, connect) {
-
         const color = draw_color;
         const thickness = draw_weight;
-
         if (connect) {
             const last_point = points[level][points[level].length - 1];
             const line = g.append('line')
@@ -147,7 +141,6 @@ function viewer(in_pattern) {
                             .style('stroke', color);
             lines[level].push(line);
         }
-
         const point = g.append('circle')
                          .attr('cx', x)
                          .attr('cy', y)
@@ -156,8 +149,7 @@ function viewer(in_pattern) {
         points[level].push(point);
     }
 
-    function grade(current, gradations) {
-        gradations = 5;
+    function grade(current) {
         for (let i = 0; i < lines.length; i++) {
             if (Math.abs(current - i) < gradations) {
                 for (let j = 0; j < lines[i].length; j++) {
@@ -167,8 +159,22 @@ function viewer(in_pattern) {
                     points[i][j].style("opacity", 1 - Math.abs(current - i) / gradations);
                 }
             }
+            if (current - i == 0) {
+                for (let j = 0; j < lines[i].length; j++) {
+                    lines[i][j].style("stroke", highlight_color);
+                }
+                for (let j = 0; j < points[i].length; j++) {
+                    points[i][j].style("fill", highlight_color);
+                }
+            } else if (Math.abs(current-i) == 1) {
+                for (let j = 0; j < lines[i].length; j++) {
+                    lines[i][j].style("stroke", draw_color);
+                }
+                for (let j = 0; j < points[i].length; j++) {
+                    points[i][j].style("fill", draw_color);
+                }
+            }
         }
     }
-
     render();
 }

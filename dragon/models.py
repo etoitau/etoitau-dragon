@@ -3,11 +3,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Pattern(models.Model):
     """user created pattern items"""
     creator = models.ForeignKey(
-        User,  
-        related_name="patterns", 
+        User,
+        related_name="patterns",
         on_delete=models.CASCADE,
         default=1,
     )
@@ -20,3 +21,22 @@ class Pattern(models.Model):
 
     def __str__(self):
         return f'{self.name} by {self.creator.username}'
+
+
+class Vote(models.Model):
+    """table to track votes for patterns"""
+    voter = models.ForeignKey(
+        User,
+        related_name="votes",
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    voted_for = models.ForeignKey(
+        Pattern,
+        related_name="pattern",
+        on_delete=models.CASCADE,
+        default=1,
+    )
+
+    def __str__(self):
+        return f'{self.voter.username} upvoted {self.voted_for}'

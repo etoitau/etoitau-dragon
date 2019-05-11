@@ -27,17 +27,37 @@
     <a class="nostyle" target="_blank" href="https://www.youtube.com/playlist?list=PLt5AfwLFPxWKaSnoaJgjVN-7Vl4Xdu4vT">
         one of the excellent Numberphile's videos</a>.
     </p>
-    <p><a class="nostyle" href="{% url 'draw' %}">Try it for yourself here</a></p>
-    <p>Or browse user-created patterns below.</p>
+    <p><a class="nostyle" href="{% url 'draw' %}">Make one yourself here</a></p>
+    <p>Browse the top user-created patterns below, or search for one.</p>
+    <form id="search_form" action="{% url 'index' %}" method="get">
+        {% csrf_token %}
+        <input autocomplete="off" autofocus id="search_term" name="search_term" maxlength="32" type="text">
+        <button type="submit" id="search_button">Search</button>
+    </form> 
+    <br>
     <table class="infotable">
         <tr>
             <th>Pattern</th><th>Name</th><th>By User</th><th>Votes</th>
         </tr>
         {% for pattern in top_patterns %}
             <tr>
-                <td><svg class="thumbnail" data-coords="{{ pattern.data }}"></svg></td>
-                <td>{{ pattern.name}}</td>
-                <td>{{ pattern.creator.username }}</td>
+                <td>
+                    <a class="nostyle" href=
+                    "{% url 'view' %}?username={{ pattern.creator.username }}&pattern_name={{ pattern.name }}">
+                        <svg class="thumbnail" data-coords="{{ pattern.data }}"></svg>
+                    </a>
+                </td>
+                <td>
+                    <a class="nostyle" href=
+                    "{% url 'view' %}?username={{ pattern.creator.username }}&pattern_name={{ pattern.name }}">
+                        {{ pattern.name}}
+                    </a>
+                </td>
+                <td>
+                    <a class="nostyle" href=
+                    "{% url 'index' %}?username={{ pattern.creator.username }}">{{ pattern.creator.username }}
+                    </a>
+                </td>
                 <td>{{ pattern.score }}</td>
             </tr>
         {% endfor %}

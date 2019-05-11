@@ -30,7 +30,7 @@
             </span>
             {% if user.is_authenticated %}
                 <br>
-                <span id="usernamespan" data-username="{{ user.username }}">Logged in as: {{ user.username }}</span>
+                <span id="usernamespan" data-username="{{ user.username }}" data-userid="{{ user.id }}">Logged in as: {{ user.username }}</span>
             {% endif %}
         </div>
         {% block content %}{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "dragon/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    Dragon Curve Maker - Draw
+{% endblock %}
+
+{% block scripts %}
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="{% static 'dragon/helpers.js' %}"></script>
+<script type="text/javascript" src="{% static 'dragon/viewer.js' %}"></script>
+<script type="text/javascript" src="{% static 'dragon/viewscript.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h3>View Pattern</h3>
+    {% if message %}<p>{{ message }}</p>{% endif %}
+    <h4>{{ pattern.name }} by {{ pattern.creator.username }}</h4>
+    {% if user.is_authenticated %}
+        {% if voted %}
+            Already upvoted
+        {% else %}
+            <button id="upvote_button">Upvote</button><span id="upvote_msg"></span><br>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'login' %}" class="nostyle">Log in</a> to upvote<br>
+    {% endif %}
+    <br>
+    <svg id="explore_view" data-coords="{{ pattern.data }}" data-patternid="{{ pattern.id }}"></svg><br>
+    <button id="deeper">Deeper</button><button id="up">Back up</button><br>
+
+</div>
+{% endblock %}

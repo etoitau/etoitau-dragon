@@ -1,16 +1,15 @@
+// functions for doing operations on patterns
 function chordAngle(pattern) {
     // return angle between chord and positive x axis
     return Math.atan2(pattern[pattern.length - 1][1] - pattern[0][1], pattern[pattern.length - 1][0] - pattern[0][0]);
 }   
    
 function chordLength(pattern) {
-    console.log("chordLength called, returning:");
     // find straight-line dimension from start point to end point
     let startx = pattern[0][0];
     let starty = pattern[0][1];
     let endx = pattern[pattern.length - 1][0];
     let endy = pattern[pattern.length - 1][1];
-    console.log(Math.hypot(startx - endx, starty - endy));
     return Math.hypot(startx - endx, starty - endy);
 }
 
@@ -83,24 +82,15 @@ function translation(pattern, move_to) {
 }
 
 function normalize(pattern) {
-    console.log("normalize called")
-    console.log("starting pattern:")
-    console.log(JSON.stringify(pattern))
     // move to origin
     var p = translation(pattern, [0, 0]);
-    console.log("after translation:")
-    console.log(JSON.stringify(p))
     // get length from start to end
     chord_length = chordLength(p);
     // scale down such that chord is unit length
     p = scale(p, 1/chord_length);
-    console.log("after scale:")
-    console.log(JSON.stringify(p))
     // get chord angle
     chord_angle = chordAngle(p);
     // rotate pattern such that chord is at angle of 0
     p = rotate(p, -1 * chord_angle);
-    console.log("after rotation:")
-    console.log(JSON.stringify(p))
     return p;
 }

@@ -1,26 +1,24 @@
+// generate thumbnails of patterns
 document.addEventListener('DOMContentLoaded', () => {
     thumbs = document.querySelectorAll(".thumbnail").forEach(function(self) {
         // svg elements
-        // points and lines will be arrays of arrays eg points[level][svgpoint]
         let points = [];
         points[0] = [];
         let lines = [];
         lines[0] = [];
         let svg = null;
         
+        // each svg element on page has data about the pattern it should show
         in_pattern = JSON.parse(self.dataset.coords);
-        console.log("got coord data:");
-        console.log(JSON.stringify(in_pattern));
 
-        // parameters
+        // appearance parameters
         let box_color = "black";
         let draw_color = "white";
         let draw_weight = 1;
-        // set viewer box size
         let box_dim = 100;
 
         function render() {
-            // create the selection area
+            // create the svg area
             svg = d3.select(self)
                     .attr('height', box_dim)
                     .attr('width', box_dim);
@@ -52,9 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const xspace = box_dim - max_min["xdim"];
             const yspace = box_dim - max_min["ydim"];
             p = translation(p, [p[0][0] + xspace/2, p[0][1] + yspace/2]);
-            console.log("starting pattern in viewer:");
-            console.log(JSON.stringify(p));
-            // initialize with pattern
+            // draw pattern
             var connect = false;
             for (let i = 0; i < p.length; i++) {
                 draw_point(0, p[i][0], p[i][1], connect);
@@ -66,10 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function draw_point(level, x, y, connect) {
-
+            // draw pattern of points connected by lines
             const color = draw_color;
             const thickness = draw_weight;
-
             if (connect) {
                 const last_point = points[level][points[level].length - 1];
                 const line = svg.append('line')
@@ -81,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 .style('stroke', color);
                 lines[level].push(line);
             }
-
             const point = svg.append('circle')
                             .attr('cx', x)
                             .attr('cy', y)
