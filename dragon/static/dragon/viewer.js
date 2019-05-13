@@ -40,7 +40,8 @@ function viewer(in_pattern) {
         outerG = svg.append("g");
         g = outerG.append("g");
 
-        // thanks to https://bl.ocks.org/mbostock/4e3925cdc804db257a86fdef3a032a45
+        // thanks to https://bl.ocks.org/mbostock/4e3925cdc804db257a86fdef3a032a45 and
+        // https://gist.github.com/Herst/98342b35922c3feed6339825275fce47 for zoom
         zoom = d3.zoom();
 
         svg.call(zoom.on("zoom", zoomed));
@@ -83,9 +84,11 @@ function viewer(in_pattern) {
         }
         connect = false;
 
-
-        document.querySelector('#deeper').onclick = () => {
+        const deeper = document.getElementById('deeper');
+        deeper.onclick = () => {
             console.log("deeper called")
+            deeper.setAttribute("disabled", "disabled");
+            deeper.innerHTML = "Working";
             if (h_level == level) {
                 // initialize next level as array (of svg circles)
                 points[level + 1] = [];
@@ -123,11 +126,17 @@ function viewer(in_pattern) {
             } 
             h_level++;
             grade(h_level);
+            deeper.removeAttribute("disabled");
+            deeper.innerHTML = "Deeper";
+            console.log("deeper done")
         };
-        document.querySelector('#up').onclick = () => {
+        const up = document.getElementById('up');
+        up.onclick = () => {
+            up.setAttribute("disabled", "disabled");
             console.log("up called");
             h_level--;
             grade(h_level);
+            up.removeAttribute("disabled");
         };
     }
 
