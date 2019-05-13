@@ -169,28 +169,27 @@ def save(request):
 
 def view(request):
     """get request to view a pattern"""
-    # get current user
-    this_user = User.objects.get(id=request.user.id)
-    # creator specified in GET request
+    context = dict()
+    # get creator of current pattern and look up in db
     creator = request.GET.get("username")
-    # look up in DB
     try:
         pattern_creator = User.objects.get(username=creator)
     except User.DoesNotExist:
         return HttpResponseBadRequest(content="Missing or incorrect username")
-    # pattern name specified in GET request
+    # get pattern name specified in GET request and look up in db
     pattern_name = request.GET.get("pattern_name")
-    # look up pattern in DB
     try:
         this_pattern = Pattern.objects.get(
             creator=pattern_creator, name=pattern_name)
+        context["pattern"] = this_pattern
     except Pattern.DoesNotExist:
         return HttpResponseBadRequest(content="Missing or incorrect pattern name")
-    # check for past vote
-    context = {
-        "pattern": this_pattern,
-        "voted": Vote.objects.filter(voter=this_user, voted_for=this_pattern),
-    }
+    try:
+        # get current user and check for past vote
+        this_user = User.objects.get(id=request.user.id)
+        context["voted"] = Vote.objects.filter(voter=this_user, voted_for=this_pattern)
+    except User.DoesNotExist:
+        context["voted"] = False
     return render(request, "dragon/view.html", context)
 
 
