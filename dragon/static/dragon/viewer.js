@@ -10,7 +10,9 @@ function viewer(in_pattern) {
     let lines = [];
     lines[0] = [];
     let svg = null;
+    let outerG = null;
     let g = null;
+    var zoom = null;
     var level = 0;
     var h_level = 0;
 
@@ -34,15 +36,17 @@ function viewer(in_pattern) {
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("fill", box_color)
-        .style("pointer-events", "all")
-        .call(d3.zoom()
-            .on("zoom", zoomed));        
-
-        g = svg.append("g");
+        
+        outerG = svg.append("g");
+        g = outerG.append("g");
 
         // thanks to https://bl.ocks.org/mbostock/4e3925cdc804db257a86fdef3a032a45
+        zoom = d3.zoom();
+
+        svg.call(zoom.on("zoom", zoomed));
+
         function zoomed() {
-        g.attr("transform", d3.event.transform);
+            g.attr("transform", d3.event.transform);
         }
         
         if (!in_pattern.length)
