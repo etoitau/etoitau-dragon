@@ -23,7 +23,7 @@ function viewer(in_pattern) {
     let draw_weight = 1;
     let gradations = 4;
     // set viewer box size
-    let box_dim = window.innerWidth * 0.9;
+    let box_dim = Math.min(window.innerWidth * 0.9, window.innerHeight *0.7);
 
 
     function render() {

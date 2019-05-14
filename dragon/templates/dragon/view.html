@@ -17,7 +17,11 @@
 <div class="content">
     <h3>View Pattern</h3>
     {% if message %}<p>{{ message }}</p>{% endif %}
-    <h4>{{ pattern.name }} by {{ pattern.creator.username }}</h4>
+    <h4>{{ pattern.name }} by 
+        <a class="nostyle" href="{% url 'index' %}?username={{ pattern.creator.username }}">
+            {{ pattern.creator.username }}
+        </a>
+    </h4>
     {% if user.is_authenticated %}
         {% if voted %}
             Already upvoted

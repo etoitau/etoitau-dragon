@@ -14,12 +14,12 @@
 
 {% block content %}
 <div class="content">
-    <h3>Dragon Curve Maker</h3>
+    <h3><a href="{% url 'index' %}" class="nostyle">Dragon Curve Maker</a></h3>
     {% if message %}<p>{{ message }}</p>{% endif %}
     
     <p>You may have seen the classic 
     <a class="nostyle" target="_blank" href="https://en.wikipedia.org/wiki/Dragon_curve#Heighway_dragon">
-        Heighway (or Jurrasic Park) dragon Curve
+        Heighway (or Jurrasic Park) dragon curve
     </a>
     before. This app lets you build your own similar fractal curve. Define a pattern by drawing a line with
     at least two segments. Then the app will recursively replace each segment with the pattern itself, flipping 
@@ -27,7 +27,7 @@
     <a class="nostyle" target="_blank" href="https://www.youtube.com/playlist?list=PLt5AfwLFPxWKaSnoaJgjVN-7Vl4Xdu4vT">
         one of the excellent Numberphile's videos</a>.
     </p>
-    <p><a class="nostyle" href="{% url 'draw' %}">Make one yourself here</a></p>
+    <p><a class="nostyle title" href="{% url 'draw' %}">Make one yourself here</a></p>
     <p>Browse the top user-created patterns below, or search for one.</p>
     <form id="search_form" action="{% url 'index' %}" method="get">
         {% csrf_token %}
